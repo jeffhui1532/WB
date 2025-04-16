@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkQuick - 您的隨時隨地找散工平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1E90FF',
+                        'light-blue': '#E6F7FF',
+                        'dark-blue': '#0078D7',
+                    }
+                }
+            },
+            darkMode: 'class',
+        }
+
+        // 检测暗黑模式
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #1E90FF;
+            --light-blue-color: #E6F7FF;
+            --dark-blue-color: #0078D7;
+            --white-color: #FFFFFF;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--white-color);
+        }
+        
+        .bg-primary-custom {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .bg-light-custom {
+            background-color: var(--light-blue-color) !important;
+        }
+        
+        .bg-white-custom {
+            background-color: var(--white-color) !important;
+        }
+        
+        .text-primary-custom {
+            color: var(--primary-color) !important;
+        }
+        
+        .border-primary-custom {
+            border-color: var(--primary-color) !important;
+        }
+        
+        .border-light-custom {
+            border-color: var(--light-blue-color) !important;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color) !important;
+            color: var(--white-color) !important;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--dark-blue-color) !important;
+        }
+        
+        .alternating-section {
+            border-top: 1px solid var(--light-blue-color);
+            border-bottom: 1px solid var(--light-blue-color);
+            background-color: var(--white-color);
+        }
+        
+        .hero-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231E90FF' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* 加载动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .dark .loading-overlay {
+            background-color: #121212;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .loading-spinner div {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        
+        .loading-spinner div:nth-child(1) {
+            left: 8px;
+            animation: loading-spinner1 0.6s infinite;
+        }
+        
+        .loading-spinner div:nth-child(2) {
+            left: 8px;
+            animation: loading-spinner2 0.6s infinite;
+        }
+        
+        .loading-spinner div:nth-child(3) {
+            left: 32px;
+            animation: loading-spinner2 0.6s infinite;
+        }
+        
+        .loading-spinner div:nth-child(4) {
+            left: 56px;
+            animation: loading-spinner3 0.6s infinite;
+        }
+        
+        @keyframes loading-spinner1 {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes loading-spinner3 {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+        
+        @keyframes loading-spinner2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 0); }
+        }
+        
+        /* 区块动画 */
+        .animate-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 区块样式 */
+        .feature-card {
+            background-color: var(--white-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-blue-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-card {
+            background-color: var(--white-color);
+            border: 1px solid var(--light-blue-color);
+        }
+        
+        .job-type-card {
+            background-color: var(--white-color);
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .testimonial-card {
+            background-color: var(--white-color);
+            border: 1px solid var(--light-blue-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loading-overlay">
+        <div class="loading-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="sticky top-0 bg-white-custom dark:bg-gray-900 shadow-sm z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-8 text-primary-custom" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                            <path d="M13 10h-2v3H8v2h3v3h2v-3h3v-2h-3z"/>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold">WorkQuick</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="#download" class="inline-block text-sm px-4 py-2 leading-none border rounded text-primary-custom border-primary-custom hover:border-transparent hover:text-white hover:bg-primary-custom transition duration-300 mr-4">下載應用</a>
+                    <a href="#register" class="inline-block text-sm px-4 py-2 leading-none rounded text-white bg-primary-custom hover:bg-dark-blue transition duration-300">立即註冊</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="py-12 md:py-20 hero-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                        隨時隨地<br/><span class="text-primary-custom">找到合適的散工機會</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                        WorkQuick 幫助您快速連接靈活工作，立即賺取額外收入，無需長期承諾。
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#register" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-custom hover:bg-dark-blue-color transition duration-300">
+                            立即開始找工作
+                            <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                        <a href="#post-job" class="inline-flex justify-center items-center px-6 py-3 border border-primary-custom text-base font-medium rounded-md text-primary-custom bg-transparent hover:bg-light-custom dark:hover:bg-gray-800 transition duration-300">
+                            我要發佈工作
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="bg-white-custom dark:bg-gray-800 rounded-lg p-6 shadow-lg animate-float border border-light-custom">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary-custom rounded-full w-12 h-12 flex items-center justify-center text-white text-xl font-bold">W</div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold">WorkQuick 平台</h3>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">4.8 ★ | 50,000+ 用戶</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="job-card rounded-lg p-4 shadow">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">餐廳服務員</span>
+                                    <span class="text-primary-custom font-bold">$150/小時</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">週六日 | 中環 | 4小時</div>
+                            </div>
+                            <div class="job-card rounded-lg p-4 shadow">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">活動推廣員</span>
+                                    <span class="text-primary-custom font-bold">$180/小時</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">週一至五 | 旺角 | 5小時</div>
+                            </div>
+                            <div class="job-card rounded-lg p-4 shadow">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">倉庫理貨員</span>
+                                    <span class="text-primary-custom font-bold">$140/小時</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">彈性時間 | 火炭 | 6小時</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要特点 -->
+    <section class="py-12 alternating-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">為什麼選擇 WorkQuick？</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    我們的平台專為尋找彈性工作機會的人設計，簡單易用且高效可靠。
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card p-6 rounded-lg">
+                    <div class="text-primary-custom mb-4">
+                        <svg class="h-12 w-12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">靈活時間安排</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        根據您的個人時間表選擇工作。無論是週末、夜間還是特定時段，您都能找到適合的工作。
+                    </p>
+                </div>
+                <div class="feature-card p-6 rounded-lg">
+                    <div class="text-primary-custom mb-4">
+                        <svg class="h-12 w-12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-3.76 0-7.26-.84-10.29-2.308z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">多樣化工作類型</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        從餐飲服務、活動推廣到臨時辦公室工作，平台提供各種類型的散工機會。
+                    </p>
+                </div>
+                <div class="feature-card p-6 rounded-lg">
+                    <div class="text-primary-custom mb-4">
+                        <svg class="h-12 w-12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">即時支付</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        工作完成後快速獲得報酬，支持多種支付方式，讓您立即獲得收入。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 如何工作 -->
+    <section id="how-it-works" class="py-12 bg-white-custom">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">如何開始使用</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    只需簡單三步，立即開始您的靈活工作之旅
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0 md:space-x-4">
+                <div class="flex flex-col items-center text-center max-w-xs">
+                    <div class="w-16 h-16 bg-primary-custom text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">1</div>
+                    <h3 class="text-xl font-semibold mb-2">建立個人檔案</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        註冊帳戶並完成您的個人資料，包括技能、經驗和偏好的工作時間。
+                    </p>
+                </div>
+                <div class="flex flex-col items-center text-center max-w-xs">
+                    <div class="w-16 h-16 bg-primary-custom text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">2</div>
+                    <h3 class="text-xl font-semibold mb-2">瀏覽並申請工作</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        根據您的偏好篩選工作，查看詳細信息，並一鍵申請感興趣的職位。
+                    </p>
+                </div>
+                <div class="flex flex-col items-center text-center max-w-xs">
+                    <div class="w-16 h-16 bg-primary-custom text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">3</div>
+                    <h3 class="text-xl font-semibold mb-2">工作並獲得報酬</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        完成工作後，雇主確認您的工作時間，系統將報酬直接存入您的帳戶。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门工作类型 -->
+    <section class="py-12 alternating-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">熱門工作類型</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    我們平台上提供多種類型的散工機會，總有一種適合您
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="job-type-card rounded-lg overflow-hidden shadow-md">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="h-8 w-8 text-primary-custom" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold ml-2">餐飲服務</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            餐廳服務員、咖啡師、廚房助手等職位，靈活的時間安排。
+                        </p>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">時薪範圍:</span>
+                            <span class="font-semibold text-primary-custom">$120-180</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="job-type-card rounded-lg overflow-hidden shadow-md">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="h-8 w-8 text-primary-custom" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17A3 3 0 015 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"></path>
+                                <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold ml-2">活動推廣</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            展覽工作人員、推廣員、產品演示等，通常在週末或特定日期。
+                        </p>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">時薪範圍:</span>
+                            <span class="font-semibold text-primary-custom">$150-200</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="job-type-card rounded-lg overflow-hidden shadow-md">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="h-8 w-8 text-primary-custom" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4zm3 1h6v4H7V5zm8 8v2h1v1H4v-1h1v-2a1 1 0 011-1h8a1 1 0 011 1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold ml-2">辦公室工作</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            臨時文員、數據輸入、客服代表等職位，適合尋求專業環境的人。
+                        </p>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">時薪範圍:</span>
+                            <span class="font-semibold text-primary-custom">$140-180</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="job-type-card rounded-lg overflow-hidden shadow-md">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="h-8 w-8 text-primary-custom" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold ml-2">倉儲物流</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            倉庫理貨員、包裝工人、送貨員等，有固定時段的體力工作。
+                        </p>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">時薪範圍:</span>
+                            <span class="font-semibold text-primary-custom">$130-170</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 推荐与评价 -->
+    <section class="py-12 bg-white-custom">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">用戶感言</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    聽聽其他用戶如何通過 WorkQuick 找到彈性工作並賺取額外收入
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card p-6 rounded-lg shadow-md">
+                    <div class="flex mb-4">
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        「作為一名在校大學生，WorkQuick 讓我能在課餘時間賺取生活費。平台的工作種類很多，我尤其喜歡餐廳服務的工作，因為時薪很好。」
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary-custom text-white rounded-full flex items-center justify-center font-semibold">張</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">張小明</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">大學生</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card p-6 rounded-lg shadow-md">
+                    <div class="flex mb-4">
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        「在育兒之間，我需要靈活的工作安排。WorkQuick 讓我能根據自己的時間表選擇辦公室臨時工作，報酬也很合理，是我額外收入的重要來源。」
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary-custom text-white rounded-full flex items-center justify-center font-semibold">李</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">李美玲</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">全職媽媽</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card p-6 rounded-lg shadow-md">
+                    <div class="flex mb-4">
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        「我嘗試過很多找臨時工作的app，但WorkQuick是最好用的。介面簡單明了，申請工作容易，最重要的是支付從來沒有延遲過。推薦給所有需要彈性工作的人！」
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary-custom text-white rounded-full flex items-center justify-center font-semibold">黃</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">黃志偉</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">自由工作者</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 部分 -->
+    <section id="register" class="py-16 bg-primary-custom text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">準備好開始您的靈活工作之旅了嗎？</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                立即註冊 WorkQuick，探索數千個符合您時間表的散工機會，開始賺取額外收入。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#register-form" class="inline-flex justify-center items-center px-8 py-4 border-2 border-white text-base font-medium rounded-md text-white bg-transparent hover:bg-white hover:text-primary-custom transition duration-300">
+                    立即註冊
+                </a>
+                <a href="#download" class="inline-flex justify-center items-center px-8 py-4 border-2 border-white text-base font-medium rounded-md text-primary-custom bg-white hover:bg-transparent hover:text-white transition duration-300">
+                    下載應用
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 下载应用区域 -->
+    <section id="download" class="py-16 bg-white-custom">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h2 class="text-3xl font-bold mb-4">隨時隨地找工作</h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">
+                        下載我們的移動應用，隨時瀏覽最新工作機會，一鍵申請，並接收重要通知。
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 transition duration-300">
+                            <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.5871 20.3762C17.324 20.8607 17.0304 21.3279 16.6638 21.7677C16.1467 22.3849 15.7159 22.7355 15.3355 22.9597C14.731 23.3361 14.0782 23.5296 13.3744 23.5413C12.8665 23.5413 12.2614 23.4063 11.5646 23.1313C10.8661 22.8574 10.2241 22.7218 9.6373 22.7218C9.0223 22.7218 8.3614 22.8574 7.6545 23.1313C6.9464 23.4063 6.3784 23.5489 5.9476 23.5602C5.2743 23.5814 4.6009 23.3815 3.9268 22.9597C3.5168 22.7154 3.0662 22.3467 2.5751 21.8536C2.0464 21.3173 1.6034 20.6836 1.2462 19.9514C0.8595 19.164 0.6125 18.3347 0.5051 17.4625C0.3861 16.5149 0.3266 15.5983 0.3266 14.713C0.3266 13.6845 0.4372 12.7878 0.6595 12.0251C0.8409 11.3968 1.1046 10.847 1.4524 10.3764C1.8014 9.9058 2.2108 9.52348 2.6827 9.23048C3.1546 8.93748 3.6742 8.78952 4.2414 8.77821C4.7784 8.77821 5.4563 8.93446 6.278 9.24253C7.097 9.55152 7.59 9.70823 7.7594 9.70823C7.8859 9.70823 8.4958 9.52348 9.585 9.15492C10.6108 8.81331 11.4864 8.66609 12.2147 8.71048C13.5631 8.79924 14.5896 9.30214 15.2904 10.2217C14.0872 10.9446 13.4922 11.9586 13.5051 13.2604C13.518 14.3262 13.9329 15.2075 14.7476 15.9016C15.1122 16.2266 15.5249 16.4728 15.989 16.6422C15.8688 16.9869 15.7415 17.3156 15.607 17.6293C15.3566 18.1861 15.0932 18.7006 14.8178 19.1724C14.5988 19.5549 14.4316 19.8465 14.3153 20.0473C14.1476 20.3349 13.947 20.5716 13.7153 20.7586C13.4835 20.9456 13.2201 21.0387 12.9254 21.0387C12.7042 21.0387 12.4193 20.9551 12.0719 20.7884C11.7246 20.6218 11.4347 20.5389 11.2025 20.5389C10.9812 20.5389 10.6871 20.6218 10.3194 20.7884C9.9518 20.9551 9.66712 21.0387 9.46525 21.0387C9.15887 21.0387 8.8895 20.9512 8.6571 20.7774C8.4247 20.6035 8.2204 20.3612 8.0105 20.0502L17.5871 20.3762ZM12.3295 7.4436C12.3295 7.65422 12.3187 7.8648 12.2971 8.0754C12.2755 8.28598 12.2323 8.50723 12.1677 8.73904C12.1017 8.97086 12.0182 9.1909 11.9159 9.39917C11.8137 9.60743 11.666 9.82342 11.4728 10.0477C11.2795 10.2721 11.0613 10.4613 10.819 10.6145C10.5767 10.7689 10.2859 10.8915 9.9486 10.9848C9.6117 11.0782 9.2401 11.1244 8.8342 11.1244C8.4671 11.1131 8.0959 11.0397 7.721 10.9051C7.3455 10.7705 7.0275 10.5978 6.7661 10.3871C6.5046 10.1765 6.26 9.91271 6.0342 9.59574C5.8081 9.27877 5.63525 8.93177 5.5155 8.55452C5.39575 8.17821 5.3364 7.78165 5.33535 7.3659C5.33535 6.3347 5.6885 5.4674 6.3954 4.76421C7.1024 4.06103 8.01825 3.66409 9.14525 3.57347C9.14525 3.5854 9.147 3.59221 9.15 3.59409C9.153 3.59598 9.162 3.59786 9.17775 3.59786C9.1935 3.59786 9.2025 3.6009 9.2138 3.60466C9.225 3.60841 9.24075 3.60841 9.26025 3.60841C9.27975 3.60841 9.2965 3.60466 9.31325 3.60466L9.31425 3.60442C9.51375 3.60442 9.7935 3.61817 10.1532 3.64692C10.513 3.67566 10.8565 3.73503 11.1842 3.82566C11.5119 3.91628 11.8407 4.03478 12.1707 4.18115C12.5008 4.32752 12.789 4.51377 13.0354 4.7399C13.2817 4.96603 13.4913 5.22284 13.6643 5.51033C13.8373 5.79781 13.9679 6.11911 14.056 6.47547C14.144 6.83182 14.1872 7.22087 14.1872 7.6425C14.1872 7.66273 14.1767 7.68296 14.1767 7.70133C14.1767 7.7197 14.1767 7.74745 14.1662 7.78557C14.0814 7.77359 13.9965 7.76351 13.9117 7.75532C13.6147 7.74244 13.3172 7.73825 13.0197 7.74274C12.7877 7.74836 12.5571 7.75211 12.3294 7.4436H12.3295Z"/>
+                            </svg>
+                            App Store
+                        </a>
+                        <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-custom hover:bg-dark-blue-color transition duration-300">
+                            <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.3033 8.89214L5.69522 0.852476C5.32953 0.608028 4.92044 0.458283 4.49659 0.413601C4.07275 0.368918 3.64455 0.430336 3.25223 0.591882C2.86515 0.750272 2.52548 1.00153 2.26554 1.32428C2.0056 1.64702 1.8348 2.0295 1.77254 2.43325L1.77173 2.43935L1.77254 21.5631L1.77335 21.5683C1.83607 21.9715 2.00684 22.3535 2.2664 22.676C2.52597 22.9985 2.86506 23.2498 3.25142 23.4087C3.64384 23.5693 4.07183 23.6302 4.49544 23.5853C4.91906 23.5404 5.328 23.3907 5.69361 23.1465L17.3021 15.1069C17.6241 14.8986 17.8917 14.622 18.0842 14.2991C18.2767 13.9762 18.3889 13.6155 18.4124 13.2441C18.4124 13.2331 18.4124 13.2229 18.4156 13.212C18.4156 13.2012 18.4156 13.1902 18.4156 13.1794C18.4156 13.1686 18.4156 13.1583 18.4124 13.1475C18.4124 13.1366 18.4124 13.1265 18.4092 13.1155C18.3856 12.7448 18.2736 12.3847 18.0816 12.0623C17.8895 11.7399 17.6227 11.4636 17.3016 11.2553L17.3033 8.89214ZM13.0228 13.1802L8.96571 15.9998L8.96571 10.3606L13.0228 13.1802Z"/>
+                            </svg>
+                            Google Play
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-10">
+                    <div class="bg-white-custom dark:bg-gray-800 rounded-2xl p-4 shadow-md relative border border-light-custom">
+                        <div class="absolute -top-3 -left-3 h-8 w-8 bg-primary-custom rounded-full flex items-center justify-center text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="max-w-[280px] mx-auto">
+                            <div class="bg-white-custom dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg border border-light-custom">
+                                <div class="h-12 bg-primary-custom flex items-center justify-between px-4">
+                                    <span class="text-white font-semibold">WorkQuick</span>
+                                    <div class="flex space-x-1">
+                                        <div class="h-2 w-2 bg-white rounded-full"></div>
+                                        <div class="h-2 w-2 bg-white rounded-full"></div>
+                                        <div class="h-2 w-2 bg-white rounded-full"></div>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="font-semibold">附近工作</h3>
+                                        <div class="text-xs text-primary-custom">查看全部</div>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="job-card rounded-lg p-3">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-sm">派發傳單</span>
+                                                <span class="text-primary-custom font-bold text-sm">$130/小時</span>
+                                            </div>
+                                            <div class="text-xs text-gray-600 dark:text-gray-300 mb-2">今日 | 銅鑼灣 | 4小時</div>
+                                            <button class="w-full bg-primary-custom text-white text-xs py-1 rounded">申請</button>
+                                        </div>
+                                        <div class="job-card rounded-lg p-3">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-sm">臨時收銀員</span>
+                                                <span class="text-primary-custom font-bold text-sm">$140/小時</span>
+                                            </div>
+                                            <div class="text-xs text-gray-600 dark:text-gray-300 mb-2">明日 | 太古 | 6小時</div>
+                                            <button class="w-full bg-primary-custom text-white text-xs py-1 rounded">申請</button>
+                                        </div>
+                                        <div class="job-card rounded-lg p-3">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-sm">倉庫點貨員</span>
+                                                <span class="text-primary-custom font-bold text-sm">$135/小時</span>
+                                            </div>
+                                            <div class="text-xs text-gray-600 dark:text-gray-300 mb-2">週末 | 火炭 | 8小時</div>
+                                            <button class="w-full bg-primary-custom text-white text-xs py-1 rounded">申請</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-600 flex">
+                                    <div class="flex-1 py-2 text-center text-xs text-primary-custom">
+                                        <svg class="h-4 w-4 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                        </svg>
+                                        首頁
+                                    </div>
+                                    <div class="flex-1 py-2 text-center text-xs text-gray-500 dark:text-gray-400">
+                                        <svg class="h-4 w-4 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        搜尋
+                                    </div>
+                                    <div class="flex-1 py-2 text-center text-xs text-gray-500 dark:text-gray-400">
+                                        <svg class="h-4 w-4 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        個人
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 注册表单 -->
+    <section id="register-form" class="py-12 alternating-section">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white-custom dark:bg-gray-700 rounded-lg shadow-lg p-6 md:p-10 border border-light-custom">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-4">現在就開始</h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-400">
+                        簡單註冊，立即找到適合您的工作機會
+                    </p>
+                </div>
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">姓名</label>
+                            <input type="text" id="first-name" name="first-name" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-custom dark:bg-gray-800 dark:text-white" placeholder="請輸入您的姓名">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">手機號碼</label>
+                            <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-custom dark:bg-gray-800 dark:text-white" placeholder="請輸入您的手機號碼">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">電子郵件</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-custom dark:bg-gray-800 dark:text-white" placeholder="請輸入您的電子郵件地址">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">密碼</label>
+                            <input type="password" id="password" name="password" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-custom dark:bg-gray-800 dark:text-white" placeholder="請設置密碼">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="work-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">偏好工作類型（可多選）</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="flex items-center">
+                                <input id="work-type-1" name="work-type" type="checkbox" class="h-4 w-4 text-primary-custom focus:ring-primary-custom border-gray-300 rounded">
+                                <label for="work-type-1" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">餐飲服務</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="work-type-2" name="work-type" type="checkbox" class="h-4 w-4 text-primary-custom focus:ring-primary-custom border-gray-300 rounded">
+                                <label for="work-type-2" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">活動推廣</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="work-type-3" name="work-type" type="checkbox" class="h-4 w-4 text-primary-custom focus:ring-primary-custom border-gray-300 rounded">
+                                <label for="work-type-3" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">辦公室工作</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="work-type-4" name="work-type" type="checkbox" class="h-4 w-4 text-primary-custom focus:ring-primary-custom border-gray-300 rounded">
+                                <label for="work-type-4" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">倉儲物流</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-primary-custom focus:ring-primary-custom border-gray-300 rounded">
+                        <label for="terms" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                            我已閱讀並同意 <a href="#" class="text-primary-custom hover:text-dark-blue-color">服務條款</a> 和 <a href="#" class="text-primary-custom hover:text-dark-blue-color">隱私政策</a>
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-custom hover:bg-dark-blue-color focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-custom transition duration-300">
+                            立即註冊
+                        </button>
+                    </div>
+                    <div class="text-center text-sm text-gray-500 dark:text-gray-400">
+                        已有帳戶？ <a href="#" class="text-primary-custom hover:text-dark-blue-color">登錄</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-white-custom dark:bg-gray-900 py-8 border-t border-light-custom">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <svg class="h-8 w-8 text-primary-custom" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                            <path d="M13 10h-2v3H8v2h3v3h2v-3h3v-2h-3z"/>
+                        </svg>
+                        <span class="ml-2 text-xl font-bold">WorkQuick</span>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        隨時隨地找到合適的散工機會
+                    </p>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-primary-custom">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-primary-custom">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.195 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-primary-custom">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">公司</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">關於我們</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">加入我們</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">合作夥伴</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">媒體報道</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">支持</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">常見問題</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">使用指南</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">聯繫客服</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">投訴建議</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">法律</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">隱私政策</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">服務條款</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">平台規則</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-custom">版權聲明</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8">
+                <p class="text-base text-gray-500 dark:text-gray-400 text-center">
+                    &copy; 2023 WorkQuick 香港有限公司。保留所有權利。
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 页面加载和滚动动画脚本 -->
+    <script>
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            setTimeout(function() {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(function() {
+                    loadingOverlay.style.display = 'none';
+                }, 500);
+            }, 800);
+            
+            // 区块滚动动画
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.add('animate-section');
+            });
+            
+            // 初始化 IntersectionObserver
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                        // 可选：观察完毕后取消观察
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });  // 当元素15%进入视口时触发
+            
+            // 观察所有区块
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
